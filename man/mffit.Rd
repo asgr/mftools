@@ -18,7 +18,7 @@ mffit(x, vmax, xerr = NULL, type = "Schechter", resampling = FALSE,
 
 \item{resampling}{If true, the MF is resampled resampling.iterations times to determine quantiles of the parameter distributions and fitted functions.}
 
-\item{resampling.iterations}{Integer (>0) number of iterations for the resampling. Ignored if \code{resampling.method = 'none'}.}
+\item{resampling.iterations}{Integer (>0) number of iterations for the resampling. Ignored if \code{resampling = FALSE}.}
 
 \item{write.fit}{Logical argument specifying whether the best-fitting parameters are displayed in the console.}
 }

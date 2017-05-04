@@ -7,7 +7,7 @@
 #' @param xerr Optional vector of same length as \code{x}, containing the 1-sigma uncertainties of \code{x}.
 #' @param type Kind of MF: \code{'Schechter'} for Schechter function or \code{'PL'} for a simple power law.
 #' @param resampling If true, the MF is resampled resampling.iterations times to determine quantiles of the parameter distributions and fitted functions.
-#' @param resampling.iterations Integer (>0) number of iterations for the resampling. Ignored if \code{resampling.method = 'none'}.
+#' @param resampling.iterations Integer (>0) number of iterations for the resampling. Ignored if \code{resampling = FALSE}.
 #' @param write.fit Logical argument specifying whether the best-fitting parameters are displayed in the console.
 #'
 #' @return Returns a structured list. The entry \code{input} contains all the input arguments. The entry \code{fit} contains all the output arguments. Most importantly, the equation of the fitted MF and the best-fitting parameters are contained in the sub-list \code{fit$parameters}.
