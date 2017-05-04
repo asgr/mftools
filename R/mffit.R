@@ -43,10 +43,10 @@ mffit <- function(x,
     if (length(xerr)!=npoints) stop('Length of xerr must be the same as the length of x.')
   }
   if (is.null(xerr)) {
-    xmin = min(x)
+    xmin = min(x)-wx
     xmax = max(x)+wx
   } else {
-    xmin = min(x-xerr*2)
+    xmin = min(x-xerr*2)-wx
     xmax = max(x+xerr*2)+wx
   }
   dx = min(0.01,(xmax-xmin)/500)
