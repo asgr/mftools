@@ -16,7 +16,7 @@ print(data$vmax)
 print(data$xerr)
 
 # These data can then be used to fit a MF, e.g.
-mf = mffit(data$x,data$vmax,data$xerr)
+mf = mffit(data$x, data$vmax, data$xerr)
 
 }
 \author{

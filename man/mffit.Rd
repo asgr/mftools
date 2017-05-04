@@ -4,9 +4,8 @@
 \alias{mffit}
 \title{Fit a galaxy mass function}
 \usage{
-mffit(x, vmax, xerr = NULL, type = "Schechter",
-  resampling.method = "none", resampling.iterations = 100,
-  write.fit = TRUE)
+mffit(x, vmax, xerr = NULL, type = "Schechter", resampling = FALSE,
+  resampling.iterations = 100, write.fit = TRUE)
 }
 \arguments{
 \item{x}{Normally a vector of log-masses \code{x = log10(M/Msun)}, but also be used with log-luminosities or absolute magnitudes.}
@@ -17,7 +16,7 @@ mffit(x, vmax, xerr = NULL, type = "Schechter",
 
 \item{type}{Kind of MF: \code{'Schechter'} for Schechter function or \code{'PL'} for a simple power law.}
 
-\item{resampling.method}{This argument can take three values. 'none' means that no resampling will be performed. 'gaussian' and 'exact' cause the routine to resample the data resampling.iterations times in order to evaluate uncertainty ranges of the model parameters and plotted functions. 'gaussian' produces symmetric uncertainties using the Hessian of the likelihood, whereas 'exact' uses a more accurate resampling that can also reveal asymmetric uncertainties.}
+\item{resampling}{If true, the MF is resampled resampling.iterations times to determine quantiles of the parameter distributions and fitted functions.}
 
 \item{resampling.iterations}{Integer (>0) number of iterations for the resampling. Ignored if \code{resampling.method = 'none'}.}
 
@@ -31,7 +30,7 @@ This function fits an analytical model of a galaxy mass function (MF) to a discr
 }
 \examples{
 data = mfdata()
-mf = mffit(data$x, data$vmax, data$xerr, resampling.method = 'exact')
+mf = mffit(data$x, data$vmax, data$xerr, resampling = TRUE)
 mfplot(mf, bin.xmin = 6.5, bin.xmax = 9.5, xlim=c(2e6,5e10), ylim=c(1e-3,1))
 
 }

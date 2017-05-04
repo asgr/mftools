@@ -6,7 +6,8 @@
 \usage{
 mfplot(mf, nbins = NULL, bin.xmin = NULL, bin.xmax = NULL,
   xlab = expression("M"["HI"] ~ "[M"["sun"] * "]"), ylab = expression(phi ~
-  "[Mpc"^-3 ~ "dex"^-1 ~ "]"), xlim = NULL, ylim = NULL)
+  "[Mpc"^-3 ~ "dex"^-1 ~ "]"), xlim = NULL, ylim = NULL,
+  show.quantile.50.90 = FALSE)
 }
 \arguments{
 \item{mf}{List produced by \code{\link{mffit}}}
@@ -24,6 +25,8 @@ mfplot(mf, nbins = NULL, bin.xmin = NULL, bin.xmax = NULL,
 \item{xlim}{2-element vector with x-axis plotting limits}
 
 \item{ylim}{2-element vector with y-axis plotting limits}
+
+\item{show.quantile.50.90}{If TRUE, 50 and 90 percentile regions are plotted, otherwise only 1-sigma (or 16/84 percentile) regions are shown.}
 }
 \value{
 If used as \code{mf = mfplot(mf)} (with \code{nbins=NULL} or \code{nbins>0}), the list \code{mf} is appended an additional entry \code{bin}, containing the binned galaxy data points.
