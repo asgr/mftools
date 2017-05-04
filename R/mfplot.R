@@ -133,6 +133,8 @@ mfplot <- function(mf,
     axis(side=2,ylab=ylab,lwd=NA,lwd.ticks=1)
   }
 
+  box(which = "plot", lty = "solid", lwd = 1)
+
   invisible(mf)
 }
 
