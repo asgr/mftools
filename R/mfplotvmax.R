@@ -1,18 +1,18 @@
 #' Plot effective volume
 #'
 #' This function plots the function \code{Vmax(x)} used for the mass function fit, as stored in the sublist \code{fit} of the list produced by \code{\link{mffit}}.
-#' 
+#'
 #' @param mf List produced by \code{\link{mffit}}
-#' 
+#'
 #' @examples
 #' data = mfdata()
 #' mf = mffit(data$x, data$vmax, data$xerr, write.fit = FALSE)
 #' mfplotvmax(mf)
-#' 
+#'
 #' @seealso \code{\link{mffit}}
-#' 
+#'
 #' @author Danail Obreschkow, 2017
-#' 
+#'
 #' @export
 
 mfplotvmax <- function(mf) {
@@ -24,5 +24,5 @@ mfplotvmax <- function(mf) {
       segments(mf$input$x-mf$input$xerr,mf$input$vmax,mf$input$x+mf$input$xerr)
     }
   }
-  lines(mf$fit$plot$x,mf$fit$vmax.fn(mf$fit$plot$x))
+  lines(mf$fit$plot$x,mf$fit$veff.fn(mf$fit$plot$x))
 }

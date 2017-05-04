@@ -4,15 +4,15 @@
 \alias{mffit}
 \title{Fit a galaxy mass function}
 \usage{
-mffit(x, vmax, xerr = NULL, type = "Schechter", resampling = FALSE,
-  resampling.iterations = 100, write.fit = TRUE)
+mffit(x, vmax, x.sigma = NULL, type = "Schechter", niterations = 5,
+  resampling = FALSE, resampling.iterations = 100, write.fit = TRUE)
 }
 \arguments{
 \item{x}{Normally a vector of log-masses \code{x = log10(M/Msun)}, but also be used with log-luminosities or absolute magnitudes.}
 
-\item{vmax}{This is either a function or a vector. If vmax is a function, it will be interpreted as the analytical function \code{Vmax(x)} representing the effective cosmic volume, in which the log-masses \code{x} can be detected; normally this is an increasing function of \code{x}. If \code{vmax} is a vector of same length as \code{x}, it will be interpreted as the values of the effective cosmic volumes associated with the different values of \code{x}, and a function \code{Vmax(x)} will be fitted automatically. In both cases the continuous function \code{Vmax(x)} will be returned as \code{vmax.fn} in the output list.}
+\item{vmax}{This is either a function or a vector. If vmax is a function, it will be interpreted as the analytical function \code{Veff(x)} representing the effective cosmic volume, in which the log-masses \code{x} can be detected; normally this is an increasing function of \code{x}. If \code{vmax} is a vector of same length as \code{x}, it will be interpreted as the values of the maximum cosmic volumes associated with the different values of \code{x}, and a function \code{Veff(x)} will be fitted automatically. In both cases the continuous function \code{Vmax(x)} will be returned as \code{veff.fn} in the output list.}
 
-\item{xerr}{Optional vector of same length as \code{x}, containing the 1-sigma uncertainties of \code{x}.}
+\item{x.sigma}{Optional vector of same length as \code{x}, containing the 1-sigma uncertainties of \code{x}.}
 
 \item{type}{Kind of MF: \code{'Schechter'} for Schechter function or \code{'PL'} for a simple power law.}
 
@@ -30,7 +30,7 @@ This function fits an analytical model of a galaxy mass function (MF) to a discr
 }
 \examples{
 data = mfdata()
-mf = mffit(data$x, data$vmax, data$xerr, resampling = TRUE)
+mf = mffit(data$x, data$vmax, data$x.sigma, resampling = TRUE)
 mfplot(mf, bin.xmin = 6.5, bin.xmax = 9.5, xlim=c(2e6,5e10), ylim=c(1e-3,1))
 
 }
