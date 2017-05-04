@@ -5,7 +5,8 @@
 \title{Fit a galaxy mass function}
 \usage{
 mffit(x, vmax, x.sigma = NULL, type = "Schechter", niterations = 5,
-  resampling = FALSE, resampling.iterations = 100, write.fit = TRUE)
+  p.guess = NULL, resampling = FALSE, resampling.iterations = 100,
+  write.fit = TRUE)
 }
 \arguments{
 \item{x}{Normally a vector of log-masses \code{x = log10(M/Msun)}, but also be used with log-luminosities or absolute magnitudes.}

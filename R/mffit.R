@@ -31,6 +31,7 @@ mffit <- function(x,
                   x.sigma = NULL,
                   type = 'Schechter',
                   niterations = 5,
+                  p.guess = NULL,
                   resampling = FALSE,
                   resampling.iterations = 100,
                   write.fit = TRUE) {
@@ -80,8 +81,13 @@ mffit <- function(x,
   }
 
   # Make source density function
+  if (is.null(p.guess)) {
+    p.initial = mfmodel(output = 'default', type = type)
+  } else {
+    p.initial = p.guess
+  }
   best.fit = .corefit(x.obs = x, x.sigma = x.sigma,
-                      p.initial = mfmodel(output = 'default', type = type),
+                      p.initial = p.initial,
                       x = xrange, v.eff = veff.fn(xrange), type = type, nit = niterations)
 
   # Determine 1-sigma range of model function
