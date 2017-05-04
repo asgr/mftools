@@ -5,8 +5,8 @@
 \title{Display fitted galaxy mass function}
 \usage{
 mfplot(mf, nbins = NULL, bin.xmin = NULL, bin.xmax = NULL,
-  xlab = expression("M"["HI"] ~ "[M"["sun"] * "]"), ylab = expression(phi ~
-  "[Mpc"^-3 ~ "dex"^-1 ~ "]"), xlim = NULL, ylim = NULL,
+  xlab = expression("M [M"["sun"] * "]"), ylab = expression(phi ~ "[Mpc"^-3
+  ~ "dex"^-1 ~ "]"), xlim = NULL, ylim = NULL,
   show.quantile.50.90 = FALSE)
 }
 \arguments{

@@ -29,7 +29,7 @@ mfplot <- function(mf,
                    nbins = NULL,
                    bin.xmin = NULL,
                    bin.xmax = NULL,
-                   xlab = expression('M'['HI']~'[M'['sun']*']'),
+                   xlab = expression('M [M'['sun']*']'),
                    ylab = expression(phi~'[Mpc'^-3~'dex'^-1~']'),
                    xlim = NULL,
                    ylim = NULL,
@@ -132,7 +132,6 @@ mfplot <- function(mf,
     axis(side=1,xlab=xlab,lwd=NA,lwd.ticks=1)
     axis(side=2,ylab=ylab,lwd=NA,lwd.ticks=1)
   }
-  box(which = "plot", lty = "solid")
 
   invisible(mf)
 }
