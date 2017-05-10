@@ -26,22 +26,22 @@ mfplot(mf, nbins = NULL, bin.xmin = NULL, bin.xmax = NULL,
 
 \item{ylim}{2-element vector with y-axis plotting limits}
 
-\item{show.quantile.50.90}{If TRUE, 50 and 90 percentile regions are plotted, otherwise only 1-sigma (or 16/84 percentile) regions are shown.}
+\item{show.quantile.50.90}{If TRUE, 50 (25 to 70) and 90 (5 to 95) percentile regions are plotted, otherwise only the 68 (16 to 84) percentile region is shown. Percentiles are only available if the MF has been fittet using \code{resampling = TRUE} in \code{\link{mffit}}. Otherwise the MF will be displayed with the 68 percent confidence region determined from direct forward-propagation of the parameter covariance matrix.}
 }
 \value{
 If used as \code{mf = mfplot(mf)} (with \code{nbins=NULL} or \code{nbins>0}), the list \code{mf} is appended an additional entry \code{bin}, containing the binned galaxy data points.
 }
 \description{
-This function displayes the galaxy mass function (MF) fitted using \code{\link{mffit}}.
+This function displays the galaxy mass function (MF) fitted using \code{\link{mffit}}.
 }
 \examples{
 data = mfdata()
-mf = mffit(data$x, data$vmax, data$xerr, write.fit = FALSE)
+mf = mffit(data$x, data$veff, data$sigma, write.fit = FALSE)
 mfplot(mf, nbins = 12, bin.xmin = 6.5, bin.xmax = 9.5, xlim=c(2e6,5e10), ylim=c(1e-3,2))
 
 }
 \author{
-Danail Obreschkow, 2017
+Danail Obreschkow
 }
 \seealso{
 \code{\link{mffit}}

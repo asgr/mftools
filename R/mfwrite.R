@@ -6,24 +6,32 @@
 #'
 #' @examples
 #' data = mfdata()
-#' mf = mffit(data$x, data$vmax, data$xerr, write.fit = FALSE)
+#' mf = mffit(data$x, data$veff, data$sigma, write.fit = FALSE)
 #' mfwrite(mf)
 #'
 #' @seealso \code{\link{mffit}}
 #'
-#' @author Danail Obreschkow, 2017
+#' @author Danail Obreschkow
 #'
 #' @export
 
 mfwrite <- function(mf) {
+
+  p = mf$fit$parameters$p.optimal
+
+  cat(sprintf('%s\n',mfmodel(type = mf$input$type, output = 'equation')))
+
   if (length(mf$fit$parameters$p.quantile.16)>0) {
-    mfmodel(p = mf$fit$parameters$p.optimal,
-            sigma = rbind(mf$fit$parameters$p.quantile.84-mf$fit$parameters$p.optimal,
-                          mf$fit$parameters$p.optimal-mf$fit$parameters$p.quantile.16),
-            type = mf$input$type, output='parameters')
+    sigma.84 = mf$fit$parameters$p.quantile.84-mf$fit$parameters$p.optimal
+    sigma.16 = mf$fit$parameters$p.optimal-mf$fit$parameters$p.quantile.16
+    for (i in seq(length(p))) {
+      cat(sprintf('p[%d] = %7.2f (+%3.2f -%3.2f)\n',i,p[i],sigma.84[i],sigma.16[i]))
+    }
   } else {
-    mfmodel(p = mf$fit$parameters$p.optimal,
-            sigma = mf$fit$parameters$p.sigma,
-            type = mf$input$type, output='parameters')
+    sigma = mf$fit$parameters$p.sigma
+    for (i in seq(length(p))) {
+      cat(sprintf('p[%d] = %7.2f (+-%3.2f)\n',i,p[i],sigma[i]))
+    }
   }
+
 }

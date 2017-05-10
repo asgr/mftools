@@ -4,39 +4,48 @@
 \alias{mffit}
 \title{Fit a galaxy mass function}
 \usage{
-mffit(x, vmax, x.sigma = NULL, type = "Schechter", niterations = 5,
-  p.guess = NULL, resampling = FALSE, resampling.iterations = 100,
-  write.fit = TRUE)
+mffit(x, veff, sigma = NULL, log = TRUE, type = "Schechter",
+  niterations = 5, resampling = FALSE, resampling.iterations = 100,
+  write.fit = TRUE, p.initial = NULL, integration.range = seq(4, 12, by =
+  0.01))
 }
 \arguments{
-\item{x}{Normally a vector of log-masses \code{x = log10(M/Msun)}, but also be used with log-luminosities or absolute magnitudes.}
+\item{x}{A vector of masses or log-masses (\code{x = log10(M/Msun)}). It can also represent (log-)luminosities or absolute magnitudes, if used in conjunction with sensible initial parameters \code{p.initial}.}
 
-\item{vmax}{This is either a function or a vector. If vmax is a function, it will be interpreted as the analytical function \code{Veff(x)} representing the effective cosmic volume, in which the log-masses \code{x} can be detected; normally this is an increasing function of \code{x}. If \code{vmax} is a vector of same length as \code{x}, it will be interpreted as the values of the maximum cosmic volumes associated with the different values of \code{x}, and a function \code{Veff(x)} will be fitted automatically. In both cases the continuous function \code{Vmax(x)} will be returned as \code{veff.fn} in the output list.}
+\item{veff}{This is either a function or a vector. If veff is a function, it will be interpreted as the analytical function \code{Veff(x)} representing the effective cosmic volume, in which the log-masses \code{x} can be detected; normally this is an increasing function of \code{x}. If \code{veff} is a vector of same length as \code{x}, it will be interpreted as the values of the maximum cosmic volumes associated with the different values of \code{x}, and a function \code{Veff(x)} will be fitted automatically. In both cases the continuous function \code{Veff(x)} will be returned as \code{veff.fn} in the output list. To plot this function, use \code{\link{mfplotveff}}.}
 
-\item{x.sigma}{Optional vector of same length as \code{x}, containing the 1-sigma uncertainties of \code{x}.}
+\item{sigma}{Optional vector of same length as \code{x}, containing the 1-sigma uncertainties of \code{x}. If \code{x} are log-masses the \code{sigma} are symmetric Gaussian uncertanties in log-mass; otherwise \code{sigma} are symmetric Gaussian uncertainties in linear mass.}
+
+\item{log}{If \code{TRUE} \code{x} and \code{sigma} refer to log-masses, otherwise to linear masses.}
 
 \item{type}{Kind of MF: \code{'Schechter'} for Schechter function or \code{'PL'} for a simple power law.}
 
-\item{resampling}{If true, the MF is resampled resampling.iterations times to determine quantiles of the parameter distributions and fitted functions.}
+\item{niterations}{Number of iterations in the repeated fit-and-debias algorithm to evaluate the maximum likelihood.}
+
+\item{resampling}{If \code{TRUE}, the MF is resampled \code{resampling.iterations} times to determine quantiles of the parameter distributions and fitted MF.}
 
 \item{resampling.iterations}{Integer (>0) number of iterations for the resampling. Ignored if \code{resampling = FALSE}.}
 
 \item{write.fit}{Logical argument specifying whether the best-fitting parameters are displayed in the console.}
+
+\item{p.initial}{Initial model parameters for fitting the MF.}
+
+\item{integration.range}{Range of log-mass values on which the likelihood function is evaluate and maximized. Note that this range always is in log10(mass) units, even if \code{log = FALSE}.}
 }
 \value{
-Returns a structured list. The entry \code{input} contains all the input arguments. The entry \code{fit} contains all the output arguments. Most importantly, the equation of the fitted MF and the best-fitting parameters are contained in the sub-list \code{fit$parameters}.
+Returns a structured list. The entry \code{input} contains all relevant input arguments. The entry \code{fit} contains all the output arguments. Most importantly, the equation of the fitted MF and the best-fitting parameters are contained in the sub-list \code{fit$parameters}.
 }
 \description{
 This function fits an analytical model of a galaxy mass function (MF) to a discrete set of galaxies with observed masses and effective volumes.
 }
 \examples{
 data = mfdata()
-mf = mffit(data$x, data$vmax, data$x.sigma, resampling = TRUE)
+mf = mffit(data$x, data$veff, data$sigma, resampling = TRUE)
 mfplot(mf, bin.xmin = 6.5, bin.xmax = 9.5, xlim=c(2e6,5e10), ylim=c(1e-3,1))
 
 }
 \author{
-Danail Obreschkow, 2017
+Danail Obreschkow
 }
 \keyword{fit}
 \keyword{function}

@@ -4,17 +4,14 @@
 \alias{mfmodel}
 \title{Analytical galaxy mass functions}
 \usage{
-mfmodel(x = NULL, p = NULL, sigma = NULL, output = "density",
-  type = "Schechter")
+mfmodel(x = NULL, p = NULL, output = "density", type = "Schechter")
 }
 \arguments{
 \item{x}{Vector of log-masses, typically \code{x = log10(M/Msun)}.}
 
 \item{p}{Parameters of the analytical function. See argument \code{type}.}
 
-\item{sigma}{Uncertainties of the parameters \code{p}. If sigma is a vector of same length as \code{p}, these uncertainties are considered to be 1-sigma Gaussian uncertainties. If sigma is a 2-row array, the first row contains the upper uncertanties to the 84-percentile value, whereas the second row contains the lower uncertainties down to the 16-percentile value.}
-
-\item{output}{Specifies what the function is doing. \code{'density'} evaluate the MF at \code{x}, \code{'npara'} returns the number of parameters of the analytical function, \code{'default'} returns a vector of typical parameters \code{p} that can be used as initial values for fitting the MF, \code{'equation'} returns a string with the equation of the MF, \code{'parameters'} displays the best fitting parameters with uncertainties.}
+\item{output}{Specifies what the function is doing. \code{'density'} evaluates the MF at \code{x}, \code{'npara'} returns the number of parameters of the analytical function, \code{'initial'} returns a vector of typical parameters \code{p} that are used as default initial values when fitting the MF, \code{'equation'} returns a string with the equation of the MF.}
 
 \item{type}{Kind of MF: \code{'Schechter'} for Schechter function or \code{'PL'} for a simple power law.}
 }
@@ -23,19 +20,15 @@ This function handles and evaluates different models of the galaxy mass function
 }
 \examples{
 # Evaluate and plot a Schechter function
-x = seq(6,10,length=100)
+x = seq(7,11,length=100)
 mass = 10^x
-parameters = c(-2,9.6,-1.5)
+parameters = c(-2,10,-1.5)
 phi = mfmodel(x, parameters, type = 'Schechter')
 plot(mass, phi, type='l', log='xy')
 
-# Display the equation and best-fitting parameters wit uncertainties
-uncertainties = c(0.3,0.23,0.13)
-mfmodel(p = parameters, sigma = uncertainties, output = 'parameters')
-
 }
 \author{
-Danail Obreschkow, 2017
+Danail Obreschkow
 }
 \seealso{
 \code{\link{mffit}}

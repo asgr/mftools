@@ -1,6 +1,6 @@
 #' Display fitted galaxy mass function
 #'
-#' This function displayes the galaxy mass function (MF) fitted using \code{\link{mffit}}.
+#' This function displays the galaxy mass function (MF) fitted using \code{\link{mffit}}.
 #'
 #' @param mf List produced by \code{\link{mffit}}
 #' @param nbins Number of bins to be plotted. This is purely for illustrative purposes. The fitting does not use bins. Choose \code{nbins=NULL} (default) to determine the number of bins automatically or \code{nbins=0} to suppress the bins.
@@ -10,18 +10,18 @@
 #' @param ylab y-axis label
 #' @param xlim 2-element vector with x-axis plotting limits
 #' @param ylim 2-element vector with y-axis plotting limits
-#' @param show.quantile.50.90 If TRUE, 50 and 90 percentile regions are plotted, otherwise only 1-sigma (or 16/84 percentile) regions are shown.
+#' @param show.quantile.50.90 If TRUE, 50 (25 to 70) and 90 (5 to 95) percentile regions are plotted, otherwise only the 68 (16 to 84) percentile region is shown. Percentiles are only available if the MF has been fittet using \code{resampling = TRUE} in \code{\link{mffit}}. Otherwise the MF will be displayed with the 68 percent confidence region determined from direct forward-propagation of the parameter covariance matrix.
 #'
 #' @return If used as \code{mf = mfplot(mf)} (with \code{nbins=NULL} or \code{nbins>0}), the list \code{mf} is appended an additional entry \code{bin}, containing the binned galaxy data points.
 #'
 #' @examples
 #' data = mfdata()
-#' mf = mffit(data$x, data$vmax, data$xerr, write.fit = FALSE)
+#' mf = mffit(data$x, data$veff, data$sigma, write.fit = FALSE)
 #' mfplot(mf, nbins = 12, bin.xmin = 6.5, bin.xmax = 9.5, xlim=c(2e6,5e10), ylim=c(1e-3,2))
 #'
 #' @seealso \code{\link{mffit}}
 #'
-#' @author Danail Obreschkow, 2017
+#' @author Danail Obreschkow
 #'
 #' @export
 
@@ -35,7 +35,7 @@ mfplot <- function(mf,
                    ylim = NULL,
                    show.quantile.50.90 = FALSE) {
 
-  # make grid of bins
+  # make binned data
   make.bins = is.null(nbins) || (!is.na(nbins) && (nbins>0))
   if (make.bins) {
     bin = list()
@@ -59,10 +59,10 @@ mfplot <- function(mf,
     bin$xcenter = bin$xmin+(seq(bin$n)-0.5)*bin$dx
 
     # fill data into bins
-    if (is.function(mf$input$vmax)) {
-      v = mf$input$vmax(mf$input$x)
+    if (is.function(mf$input$veff)) {
+      v = mf$input$veff(mf$input$x)
     } else {
-      v = mf$input$vmax
+      v = mf$input$veff
     }
     bin$phi = bin$count = bin$xmean = array(0,bin$n)
     for (i in seq(length(mf$input$x))) {
@@ -77,11 +77,10 @@ mfplot <- function(mf,
 
   # define plot limits
   if (is.null(xlim)) {
-    xlim = 10^(range(mf$input$x)+c(-0.5,0.5)*(max(mf$input$x)-min(mf$input$x)))
-    xlim[1] = max(xlim[1],10^min(mf$fit$plot$x))
+    xlim = 10^range(mf$fit$fn$x)
   }
   if (is.null(ylim)) {
-    ylim = c(1e-3*max(mf$fit$plot$phi.optimal),2*max(max(mf$fit$plot$phi.optimal),bin$phi))
+    ylim = c(1e-3*max(mf$fit$fn$y),2*max(max(mf$fit$fn$y),bin$phi))
   }
 
   # open plot
@@ -89,25 +88,25 @@ mfplot <- function(mf,
        xlim = xlim, ylim = ylim, xlab = '', ylab = '',bty='n')
 
   # plot polygons
-  poly.x = 10^c(mf$fit$plot$x,rev(mf$fit$plot$x))
-  show.quantile.50.90 = show.quantile.50.90 & length(mf$fit$plot$phi.quantile.05)>0
+  poly.x = 10^c(mf$fit$fn$x,rev(mf$fit$fn$x))
+  show.quantile.50.90 = show.quantile.50.90 & length(mf$fit$fn$y.quantile.05)>0
   if (show.quantile.50.90) {
-    poly.y.50 = pmax(ylim[1],c(mf$fit$plot$phi.quantile.25,rev(mf$fit$plot$phi.quantile.75)))
-    poly.y.90 = pmax(ylim[1],c(mf$fit$plot$phi.quantile.05,rev(mf$fit$plot$phi.quantile.95)))
+    poly.y.50 = pmax(ylim[1],c(mf$fit$fn$y.quantile.25,rev(mf$fit$fn$y.quantile.75)))
+    poly.y.90 = pmax(ylim[1],c(mf$fit$fn$y.quantile.05,rev(mf$fit$fn$y.quantile.95)))
     polygon(poly.x,poly.y.90,col='#ffdddd',border=NA)
     polygon(poly.x,poly.y.50,col='#ffaaaa',border=NA)
   } else {
-    if (length(mf$fit$plot$phi.quantile.16)>0) {
-      poly.y.68 = pmax(ylim[1],c(mf$fit$plot$phi.quantile.16,rev(mf$fit$plot$phi.quantile.84)))
+    if (length(mf$fit$fn$y.quantile.16)>0) {
+      poly.y.68 = pmax(ylim[1],c(mf$fit$fn$y.quantile.16,rev(mf$fit$fn$y.quantile.84)))
     } else
-      poly.y.68 = pmax(ylim[1],c(mf$fit$plot$phi.optimal-mf$fit$plot$phi.sigma,
-                                 rev(mf$fit$plot$phi.optimal+mf$fit$plot$phi.sigma)))
+      poly.y.68 = pmax(ylim[1],c(mf$fit$fn$y-mf$fit$fn$y.error.neg,
+                                 rev(mf$fit$fn$y+mf$fit$fn$y.error.pos)))
     polygon(poly.x,poly.y.68,col='#ffbbbb',border=NA)
   }
 
   # plot central fit
-  lines(10^mf$fit$plot$x[mf$fit$plot$phi.optimal>0],
-        mf$fit$plot$phi.optimal[mf$fit$plot$phi.optimal>0],col='red',lwd=1.5)
+  lines(10^mf$fit$fn$x[mf$fit$fn$y>0],
+        mf$fit$fn$y[mf$fit$fn$y>0],col='red',lwd=1.5)
 
   # plot binned data
   if (make.bins) {

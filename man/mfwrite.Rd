@@ -14,12 +14,12 @@ This function displays the best-fitting model parameters of a mass function prev
 }
 \examples{
 data = mfdata()
-mf = mffit(data$x, data$vmax, data$xerr, write.fit = FALSE)
+mf = mffit(data$x, data$veff, data$sigma, write.fit = FALSE)
 mfwrite(mf)
 
 }
 \author{
-Danail Obreschkow, 2017
+Danail Obreschkow
 }
 \seealso{
 \code{\link{mffit}}

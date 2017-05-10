@@ -7,20 +7,20 @@
 mfdata()
 }
 \description{
-This function produces an example of log-masses \code{x} with uncertainties \code{xerr} and effective volumes \code{vmax}. The data is taken from a publication by Westmeier et al. (2017) and represents HI-Masses in the Sculptor structure.
+This function produces an example of log-masses \code{x} with Gaussian uncertainties \code{sigma} and effective volumes \code{veff}. The data is taken from a publication by Westmeier et al. (2017) and represents HI-Masses in the Sculptor structure.
 }
 \examples{
 data <- mfdata()
 print(data$x)
-print(data$vmax)
-print(data$xerr)
+print(data$veff)
+print(data$sigma)
 
 # These data can then be used to fit a MF, e.g.
-mf = mffit(data$x, data$vmax, data$xerr)
+mf = mffit(data$x, data$veff, data$sigma)
 
 }
 \author{
-Danail Obreschkow, 2017
+Danail Obreschkow
 }
 \seealso{
 \code{\link{mffit}}
