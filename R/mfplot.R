@@ -98,9 +98,10 @@ mfplot <- function(mf,
   } else {
     if (length(mf$fit$fn$y.quantile.16)>0) {
       poly.y.68 = pmax(ylim[1],c(mf$fit$fn$y.quantile.16,rev(mf$fit$fn$y.quantile.84)))
-    } else
+    } else {
       poly.y.68 = pmax(ylim[1],c(mf$fit$fn$y-mf$fit$fn$y.error.neg,
                                  rev(mf$fit$fn$y+mf$fit$fn$y.error.pos)))
+    }
     polygon(poly.x,poly.y.68,col='#ffbbbb',border=NA)
   }
 

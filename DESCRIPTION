@@ -2,8 +2,13 @@ Package: mftools
 Title: Optimal fitting of galaxy mass functions
 Version: 0.2
 Authors@R: person("Danail", "Obreschkow", email = "danail.obreschkow@icrar.org", role = c("aut", "cre"))
-Description: This package can fit analytical galaxy mass functions, such as the famous Schechter function, to a list of galaxies with mass measurements. Unlike most common fitting approaches, this method is independent of binning, accounts for measurement uncertainties and non-detections, and yields well-defined parameter uncertainties.
-Depends: R (>= 3.1.1)
+Description: This package can fit analytical galaxy mass functions, such as the
+    famous Schechter function, to a list of galaxies with mass measurements. Unlike
+    most common fitting approaches, this method is independent of binning, accounts
+    for measurement uncertainties and non-detections, and yields well-defined
+    parameter uncertainties.
+Depends:
+    R (>= 3.1.1)
 License: GPL-3
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 5.0.1

@@ -235,10 +235,11 @@ mffit <- function(x, # Mass or log-mass
   cum = cumsum(density/sum(density))
   npoints = length(mf$input$x)
   p.new = array(NA,c(mf$input$resampling.iterations,np))
-  x.obs = array(NA,npoints)
   for (iteration in seq(mf$input$resampling.iterations)) {
-    r = runif(npoints)
-    for (i in seq(npoints)) {
+    n.new = max(1,rpois(1,npoints))
+    x.obs = array(NA,n.new)
+    r = runif(n.new)
+    for (i in seq(n.new)) {
       index = which.min(abs(cum-r[i]))
       x.obs[i] = x[index]
     }
