@@ -42,7 +42,7 @@ mffit <- function(x, # Mass or log-mass
                   integration.range = seq(4,12,by=0.01)) {
 
   # Input handling
-  if (length(x)<=2) stop('Give at least 2 data points.')
+  if (length(x)<2) stop('Give at least 2 data points.')
   npoints = length(x)
   if (!is.null(sigma)) {
     if (length(sigma)!=npoints) stop('Length of x.sigma must be the same as the length of x.')
@@ -186,6 +186,8 @@ mffit <- function(x, # Mass or log-mass
     # make -ln(L)
     neglogL = function(p) {
       phi = mfmodel(integration.range, p, type=type)
+      phi[is.na(phi)] = 0
+      phi[is.infinite(phi)] = 0
       list = phi>0 & veff>0
       return(sum(phi[list]*veff[list]-log(phi[list])*rho.unbiased[list])*dx)
     }
@@ -196,7 +198,12 @@ mffit <- function(x, # Mass or log-mass
   }
 
   # make output
-  return(list(p.optimal = opt$par, covariance = solve(opt$hessian)))
+  if (det(opt$hessian)<1e-12) {
+    cov = array(0,dim(opt$hessian))
+  } else {
+    cov = solve(opt$hessian)
+  }
+  return(list(p.optimal = opt$par, covariance = cov))
 
 }
 
@@ -236,7 +243,7 @@ mffit <- function(x, # Mass or log-mass
   npoints = length(mf$input$x)
   p.new = array(NA,c(mf$input$resampling.iterations,np))
   for (iteration in seq(mf$input$resampling.iterations)) {
-    n.new = max(1,rpois(1,npoints))
+    n.new = max(2,rpois(1,npoints))
     x.obs = array(NA,n.new)
     r = runif(n.new)
     for (i in seq(n.new)) {

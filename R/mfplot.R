@@ -10,7 +10,10 @@
 #' @param ylab y-axis label
 #' @param xlim 2-element vector with x-axis plotting limits
 #' @param ylim 2-element vector with y-axis plotting limits
-#' @param show.quantile.50.90 If TRUE, 50 (25 to 70) and 90 (5 to 95) percentile regions are plotted, otherwise only the 68 (16 to 84) percentile region is shown. Percentiles are only available if the MF has been fittet using \code{resampling = TRUE} in \code{\link{mffit}}. Otherwise the MF will be displayed with the 68 percent confidence region determined from direct forward-propagation of the parameter covariance matrix.
+#' @param show.uncertainties If \code{TRUE}, uncertainties are displayed around the best fit model.
+#' @param uncertainty.type \code{1}: plot Gaussian 1-sigma uncertanties propagated from the Hessian matrix of the likelihood. \code{2}: plot 68 percentile region (from 16 to 84 percent). \code{3} plot 50 (25 to 70) and 90 (5 to 95) percentile regions.
+#' @param add If \code{TRUE}, the lines are overplotted on the currently open plot. 
+#' @param col Color of line and uncertainty regions.
 #'
 #' @return If used as \code{mf = mfplot(mf)} (with \code{nbins=NULL} or \code{nbins>0}), the list \code{mf} is appended an additional entry \code{bin}, containing the binned galaxy data points.
 #'
@@ -33,7 +36,14 @@ mfplot <- function(mf,
                    ylab = expression(phi~'[Mpc'^-3~'dex'^-1~']'),
                    xlim = NULL,
                    ylim = NULL,
-                   show.quantile.50.90 = FALSE) {
+                   show.uncertainties = TRUE,
+                   uncertainty.type = NULL,
+                   add = FALSE,
+                   col = 'red') {
+  
+  r = col2rgb(col)[1]/255
+  g = col2rgb(col)[2]/255
+  b = col2rgb(col)[3]/255
 
   # make binned data
   make.bins = is.null(nbins) || (!is.na(nbins) && (nbins>0))
@@ -84,30 +94,41 @@ mfplot <- function(mf,
   }
 
   # open plot
-  plot(1,1,type='n',log='xy',xaxs='i',yaxs='i',xaxt='n',yaxt='n',
-       xlim = xlim, ylim = ylim, xlab = '', ylab = '',bty='n')
+  if (add==FALSE) {
+    plot(1,1,type='n',log='xy',xaxs='i',yaxs='i',xaxt='n',yaxt='n',
+         xlim = xlim, ylim = ylim, xlab = '', ylab = '',bty='n')
+  }
 
   # plot polygons
-  poly.x = 10^c(mf$fit$fn$x,rev(mf$fit$fn$x))
-  show.quantile.50.90 = show.quantile.50.90 & length(mf$fit$fn$y.quantile.05)>0
-  if (show.quantile.50.90) {
-    poly.y.50 = pmax(ylim[1],c(mf$fit$fn$y.quantile.25,rev(mf$fit$fn$y.quantile.75)))
-    poly.y.90 = pmax(ylim[1],c(mf$fit$fn$y.quantile.05,rev(mf$fit$fn$y.quantile.95)))
-    polygon(poly.x,poly.y.90,col='#ffdddd',border=NA)
-    polygon(poly.x,poly.y.50,col='#ffaaaa',border=NA)
-  } else {
-    if (length(mf$fit$fn$y.quantile.16)>0) {
-      poly.y.68 = pmax(ylim[1],c(mf$fit$fn$y.quantile.16,rev(mf$fit$fn$y.quantile.84)))
-    } else {
-      poly.y.68 = pmax(ylim[1],c(mf$fit$fn$y-mf$fit$fn$y.error.neg,
-                                 rev(mf$fit$fn$y+mf$fit$fn$y.error.pos)))
+  if (show.uncertainties) {
+    poly.x = 10^c(mf$fit$fn$x,rev(mf$fit$fn$x))
+    if (is.null(uncertainty.type)) {
+      if (length(mf$fit$fn$y.quantile.05)>0) {
+        uncertainty.type = 2
+      } else {
+        uncertainty.type = 1
+      }
     }
-    polygon(poly.x,poly.y.68,col='#ffbbbb',border=NA)
+    if ((uncertainty.type>1) & (!length(mf$fit$fn$y.quantile.05)>0)) stop('Quantiles not available. Use resampling in mffit.')
+    if (uncertainty.type == 3) {
+      poly.y.50 = pmax(ylim[1],c(mf$fit$fn$y.quantile.25,rev(mf$fit$fn$y.quantile.75)))
+      poly.y.90 = pmax(ylim[1],c(mf$fit$fn$y.quantile.05,rev(mf$fit$fn$y.quantile.95)))
+      polygon(poly.x,poly.y.90,col=rgb(r,g,b,0.2),border=NA)
+      polygon(poly.x,poly.y.50,col=rgb(r,g,b,0.3),border=NA)
+    } else {
+      if (uncertainty.type == 2) {
+        poly.y.68 = pmax(ylim[1],c(mf$fit$fn$y.quantile.16,rev(mf$fit$fn$y.quantile.84)))
+      } else if (uncertainty.type == 1) {
+        poly.y.68 = pmax(ylim[1],c(mf$fit$fn$y-mf$fit$fn$y.error.neg,
+                                   rev(mf$fit$fn$y+mf$fit$fn$y.error.pos)))
+      }
+      polygon(poly.x,poly.y.68,col=rgb(r,g,b,0.3),border=NA)
+    }
   }
 
   # plot central fit
   lines(10^mf$fit$fn$x[mf$fit$fn$y>0],
-        mf$fit$fn$y[mf$fit$fn$y>0],col='red',lwd=1.5)
+        mf$fit$fn$y[mf$fit$fn$y>0],col=col,lwd=1.5)
 
   # plot binned data
   if (make.bins) {

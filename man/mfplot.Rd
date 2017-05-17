@@ -6,8 +6,8 @@
 \usage{
 mfplot(mf, nbins = NULL, bin.xmin = NULL, bin.xmax = NULL,
   xlab = expression("M [M"["sun"] * "]"), ylab = expression(phi ~ "[Mpc"^-3
-  ~ "dex"^-1 ~ "]"), xlim = NULL, ylim = NULL,
-  show.quantile.50.90 = FALSE)
+  ~ "dex"^-1 ~ "]"), xlim = NULL, ylim = NULL, show.uncertainties = TRUE,
+  uncertainty.type = NULL, add = FALSE, col = "red")
 }
 \arguments{
 \item{mf}{List produced by \code{\link{mffit}}}
@@ -26,7 +26,13 @@ mfplot(mf, nbins = NULL, bin.xmin = NULL, bin.xmax = NULL,
 
 \item{ylim}{2-element vector with y-axis plotting limits}
 
-\item{show.quantile.50.90}{If TRUE, 50 (25 to 70) and 90 (5 to 95) percentile regions are plotted, otherwise only the 68 (16 to 84) percentile region is shown. Percentiles are only available if the MF has been fittet using \code{resampling = TRUE} in \code{\link{mffit}}. Otherwise the MF will be displayed with the 68 percent confidence region determined from direct forward-propagation of the parameter covariance matrix.}
+\item{show.uncertainties}{If \code{TRUE}, uncertainties are displayed around the best fit model.}
+
+\item{uncertainty.type}{\code{1}: plot Gaussian 1-sigma uncertanties propagated from the Hessian matrix of the likelihood. \code{2}: plot 68 percentile region (from 16 to 84 percent). \code{3} plot 50 (25 to 70) and 90 (5 to 95) percentile regions.}
+
+\item{add}{If \code{TRUE}, the lines are overplotted on the currently open plot.}
+
+\item{col}{Color of line and uncertainty regions.}
 }
 \value{
 If used as \code{mf = mfplot(mf)} (with \code{nbins=NULL} or \code{nbins>0}), the list \code{mf} is appended an additional entry \code{bin}, containing the binned galaxy data points.
