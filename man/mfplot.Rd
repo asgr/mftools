@@ -7,7 +7,9 @@
 mfplot(mf, nbins = NULL, bin.xmin = NULL, bin.xmax = NULL,
   xlab = expression("M [M"["sun"] * "]"), ylab = expression(phi ~ "[Mpc"^-3
   ~ "dex"^-1 ~ "]"), xlim = NULL, ylim = NULL, show.uncertainties = TRUE,
-  uncertainty.type = NULL, add = FALSE, col = "red")
+  uncertainty.type = NULL, show.bias.correction = FALSE, add = FALSE,
+  col = "red", lwd = 1.5, lty = 1, col.bias.correction = col,
+  lwd.bias.correction = lwd, lty.bias.correction = 2)
 }
 \arguments{
 \item{mf}{List produced by \code{\link{mffit}}}
@@ -32,7 +34,17 @@ mfplot(mf, nbins = NULL, bin.xmin = NULL, bin.xmax = NULL,
 
 \item{add}{If \code{TRUE}, the lines are overplotted on the currently open plot.}
 
-\item{col}{Color of line and uncertainty regions.}
+\item{col}{Color of ML fit and uncertainty regions.}
+
+\item{lwd}{Line width of ML fit.}
+
+\item{lty}{Line type of ML fit.}
+
+\item{col.bias.correction}{Line properties of bias corrected MF fit.}
+
+\item{lwd.bias.correction}{Line properties of bias corrected MF fit.}
+
+\item{lty.bias.correction}{Line properties of bias corrected MF fit.}
 }
 \value{
 If used as \code{mf = mfplot(mf)} (with \code{nbins=NULL} or \code{nbins>0}), the list \code{mf} is appended an additional entry \code{bin}, containing the binned galaxy data points.
@@ -40,16 +52,10 @@ If used as \code{mf = mfplot(mf)} (with \code{nbins=NULL} or \code{nbins>0}), th
 \description{
 This function displays the galaxy mass function (MF) fitted using \code{\link{mffit}}.
 }
-\examples{
-data = mfdata()
-mf = mffit(data$x, data$veff, data$sigma, write.fit = FALSE)
-mfplot(mf, nbins = 12, bin.xmin = 6.5, bin.xmax = 9.5, xlim=c(2e6,5e10), ylim=c(1e-3,2))
-
-}
 \author{
 Danail Obreschkow
 }
 \seealso{
-\code{\link{mffit}}
+See examples in \code{\link{mffit}}.
 }
 

@@ -11,12 +11,12 @@ This function produces an example of log-masses \code{x} with Gaussian uncertain
 }
 \examples{
 data <- mfdata()
-print(data$x)
+print(data$mass)
+print(data$mass.sigma)
 print(data$veff)
-print(data$sigma)
 
 # These data can then be used to fit a MF, e.g.
-mf = mffit(data$x, data$veff, data$sigma)
+mf = mffit(data$mass, data$veff, data$mass.sigma)
 
 }
 \author{

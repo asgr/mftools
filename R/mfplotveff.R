@@ -4,30 +4,22 @@
 #'
 #' @param mf List produced by \code{\link{mffit}}
 #'
-#' @examples
-#' data = mfdata()
-#' mf = mffit(data$x, data$veff, data$sigma, write.fit = FALSE)
-#' mfplotveff(mf)
-#'
-#' @seealso \code{\link{mffit}}
+#' @seealso See examples in \code{\link{mffit}}.
 #'
 #' @author Danail Obreschkow
 #'
 #' @export
 
 mfplotveff <- function(mf) {
-  plot(0,0,type='n',xlim=range(mf$input$x),ylim=c(0,max(mf$fit$veff.fn(mf$input$x))),
+  if (mf$input$log) {
+    x = mf$input$mass
+  } else {
+    x = log10(mf$input$mass)
+  }
+  plot(0,0,type='n',xlim=range(x),ylim=c(0,max(mf$model$veff.function(x))),
        pch=20,xlab='log-mass x',ylab='Veff')
   if (!is.function(mf$input$veff)) {
-    points(mf$input$x,mf$input$veff,pch=20)
-    if (!is.null(mf$input$sigma)) {
-      if (mf$input$log) {
-        d = mf$input$sigma
-      } else {
-        d = mf$input$sigma/log(10)/10^mf$input$x
-      }
-      segments(mf$input$x-d,mf$input$veff,mf$input$x+d)
-    }
+    points(x,mf$input$veff,pch=20)
   }
-  lines(mf$fit$fn$x,mf$fit$veff.fn(mf$fit$fn$x))
+  lines(mf$fit$vectors$x,mf$model$veff.function(mf$fit$vectors$x))
 }

@@ -6,10 +6,10 @@
 #'
 #' @examples
 #' data = mfdata()
-#' mf = mffit(data$x, data$veff, data$sigma, write.fit = FALSE)
+#' mf = mffit(data$mass, data$veff, write.fit = FALSE)
 #' mfwrite(mf)
 #'
-#' @seealso \code{\link{mffit}}
+#' @seealso See examples in \code{\link{mffit}}.
 #'
 #' @author Danail Obreschkow
 #'
@@ -19,7 +19,9 @@ mfwrite <- function(mf) {
 
   p = mf$fit$parameters$p.optimal
 
-  cat(sprintf('%s\n',mfmodel(type = mf$input$type, output = 'equation')))
+  if (!is.null(mf$model$mass.function.equation)) {
+    cat(sprintf('%s\n',mf$model$mass.function.equation))
+  }
 
   if (length(mf$fit$parameters$p.quantile.16)>0) {
     sigma.84 = mf$fit$parameters$p.quantile.84-mf$fit$parameters$p.optimal

@@ -12,16 +12,10 @@ mfplotveff(mf)
 \description{
 This function plots the function \code{Veff(x)} used for the mass function fit, as stored in the sublist \code{fit} of the output produced by \code{\link{mffit}}.
 }
-\examples{
-data = mfdata()
-mf = mffit(data$x, data$veff, data$sigma, write.fit = FALSE)
-mfplotveff(mf)
-
-}
 \author{
 Danail Obreschkow
 }
 \seealso{
-\code{\link{mffit}}
+See examples in \code{\link{mffit}}.
 }
 

@@ -14,7 +14,7 @@ This function displays the best-fitting model parameters of a mass function prev
 }
 \examples{
 data = mfdata()
-mf = mffit(data$x, data$veff, data$sigma, write.fit = FALSE)
+mf = mffit(data$mass, data$veff, write.fit = FALSE)
 mfwrite(mf)
 
 }
@@ -22,6 +22,6 @@ mfwrite(mf)
 Danail Obreschkow
 }
 \seealso{
-\code{\link{mffit}}
+See examples in \code{\link{mffit}}.
 }
 

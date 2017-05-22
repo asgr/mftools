@@ -4,27 +4,29 @@
 \alias{mffit}
 \title{Fit a galaxy mass function}
 \usage{
-mffit(x, veff, sigma = NULL, log = TRUE, type = "Schechter",
-  niterations = 5, resampling = FALSE, resampling.iterations = 100,
-  write.fit = TRUE, p.initial = NULL, integration.range = seq(4, 12, by =
-  0.01))
+mffit(mass, veff, mass.sigma = NULL, log = FALSE,
+  mass.function = "Schechter", n.iterations = 5, resampling = FALSE,
+  resampling.iterations = 100, bias.correction = FALSE, write.fit = TRUE,
+  p.initial = NULL, log.integration.range = seq(4, 12, by = 0.01))
 }
 \arguments{
-\item{x}{A vector of masses or log-masses (\code{x = log10(M/Msun)}). It can also represent (log-)luminosities or absolute magnitudes, if used in conjunction with sensible initial parameters \code{p.initial}.}
+\item{mass}{A vector of masses (\code{M/Msun}) or log-masses (\code{x = log10(M/Msun)}). It can also represent (log-)luminosities or absolute magnitudes, if used in conjunction with sensible initial parameters \code{p.initial}.}
 
-\item{veff}{This is either a function or a vector. If veff is a function, it will be interpreted as the analytical function \code{Veff(x)} representing the effective cosmic volume, in which the log-masses \code{x} can be detected; normally this is an increasing function of \code{x}. If \code{veff} is a vector of same length as \code{x}, it will be interpreted as the values of the maximum cosmic volumes associated with the different values of \code{x}, and a function \code{Veff(x)} will be fitted automatically. In both cases the continuous function \code{Veff(x)} will be returned as \code{veff.fn} in the output list. To plot this function, use \code{\link{mfplotveff}}.}
+\item{veff}{This is either a function or a vector. If veff is a function, it will be interpreted as the analytical function \code{Veff(x)} representing the effective cosmic volume, in which the log-masses \code{x = log10(M/Msun)} can be detected; normally this is an increasing function of \code{x}. If \code{veff} is a vector of same length as \code{mass}, it will be interpreted as the values of the maximum cosmic volumes associated with the different values of \code{mass}, and a function \code{Veff(x)} will be fitted automatically. In both cases the continuous function \code{Veff(x)} will be returned as \code{veff.function} in the output list \code{model}. To plot this function, use \code{\link{mfplotveff}}.}
 
-\item{sigma}{Optional vector of same length as \code{x}, containing the 1-sigma uncertainties of \code{x}. If \code{x} are log-masses the \code{sigma} are symmetric Gaussian uncertanties in log-mass; otherwise \code{sigma} are symmetric Gaussian uncertainties in linear mass.}
+\item{mass.sigma}{Optional vector of same length as \code{mass}, containing the 1-sigma uncertainties of \code{mass}. If \code{mass} are log-masses the \code{mass.sigma} are symmetric Gaussian uncertanties in log-mass; otherwise \code{mass.sigma} are symmetric Gaussian uncertainties in linear mass.}
 
-\item{log}{If \code{TRUE} \code{x} and \code{sigma} refer to log-masses, otherwise to linear masses.}
+\item{log}{If \code{TRUE} \code{mass} and \code{mass.sigma} refer to log-masses, otherwise to linear masses.}
 
-\item{type}{Kind of MF: \code{'Schechter'} for Schechter function or \code{'PL'} for a simple power law.}
+\item{mass.function}{Eighter a string of a function. A string specifies the type of preset mass function. Currently available are \code{'Schechter'} for Schechter function or \code{'PL'} for a simple power law. Alternatively, \code{mass.function} can be a function of log-mass \code{x = log10(M/Msun)} and a list of parameters \code{p}, defined via \code{mass.function <- function(x,p) {...}}. In the latter case, the argument \code{p.initial} is mandatory.}
 
-\item{niterations}{Number of iterations in the repeated fit-and-debias algorithm to evaluate the maximum likelihood.}
+\item{n.iterations}{Number of iterations in the repeated fit-and-debias algorithm to evaluate the maximum likelihood.}
 
 \item{resampling}{If \code{TRUE}, the MF is resampled \code{resampling.iterations} times to determine quantiles of the parameter distributions and fitted MF.}
 
 \item{resampling.iterations}{Integer (>0) number of iterations for the resampling. Ignored if \code{resampling = FALSE}.}
+
+\item{bias.correction}{If true, bias-corrected parameters are estimated using jackknifing.}
 
 \item{write.fit}{Logical argument specifying whether the best-fitting parameters are displayed in the console.}
 
@@ -33,15 +35,27 @@ mffit(x, veff, sigma = NULL, log = TRUE, type = "Schechter",
 \item{integration.range}{Range of log-mass values on which the likelihood function is evaluate and maximized. Note that this range always is in log10(mass) units, even if \code{log = FALSE}.}
 }
 \value{
-Returns a structured list. The entry \code{input} contains all relevant input arguments. The entry \code{fit} contains all the output arguments. Most importantly, the equation of the fitted MF and the best-fitting parameters are contained in the sub-list \code{fit$parameters}.
+Returns a structured list. The sublist \code{input} contains all relevant input arguments. The sublist \code{model} specified the model function to be fitted. The sublist \code{fit} contains all the output arguments of the MLE algorithm. The output can be visualized using \code{\link{mfplot}} and \code{\link{mfwrite}}.
 }
 \description{
 This function fits an analytical model of a galaxy mass function (MF) to a discrete set of galaxies with observed masses and effective volumes.
 }
 \examples{
+# basic example
 data = mfdata()
-mf = mffit(data$x, data$veff, data$sigma, resampling = TRUE)
-mfplot(mf, bin.xmin = 6.5, bin.xmax = 9.5, xlim=c(2e6,5e10), ylim=c(1e-3,1))
+mf = mffit(data$mass, data$veff)
+mfplot(mf, xlim=c(2e6,5e10))
+
+# include measurement errors in fit
+mf = mffit(data$mass, data$veff, data$mass.sigma)
+mfplot(mf, add = TRUE, show.uncertainties = FALSE, lty = 2, col = 'purple')
+
+# evaluate bias correction and parameter quantiles
+mf = mffit(data$mass, data$veff, data$mass.sigma, resampling = TRUE, resampling.iterations = 1e2, bias.correction = TRUE)
+mfplot(mf, bin.xmin = 6.5, bin.xmax = 9.5, xlim=c(2e6,5e10), ylim=c(1e-3,1), uncertainty.type = 3, show.bias.correction = TRUE)
+
+# show fitted Veff function
+mfplotveff(mf)
 
 }
 \author{
